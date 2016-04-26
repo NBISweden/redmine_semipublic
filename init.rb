@@ -1,3 +1,4 @@
+require_dependency 'semipublic_hook_listener'
 Redmine::Plugin.register :redmine_semipublic do
   name 'Redmine Semipublic plugin'
   author 'Mikael Borg'
