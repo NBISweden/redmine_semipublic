@@ -1,6 +1,18 @@
-<% if @issue.safe_attribute? 'is_private' %>
-        <p style="float:right; margin-right:1em;">
-          <%= check_box :is_private, :no_label => true %><label class="inline" for="issue_is_private" id="issue_is_private_label"><%= l(:field_is_private) %></label>
+<% if @issue.project.module_enabled?(:semipublic_links) %>
+<p><strong>Public Link</strong></p>
+<% if @public_link = PublicLink.find_by(:issue_id => @issue.id) %>
+        <p style="margin-right:1em;">
+        <% if User.current.allowed_to?(:edit_issues, @issue.project) %>
+        <% if @public_link.active %>
+          <%= button_to "Disable", "/issues/#{@issue.id}/public_link/toggle", :method => :put %>
+        <% else %>
+          <%= button_to "Enable", "/issues/#{@issue.id}/public_link/toggle", :method => :put %>
+        <% end %>
+        <% end %>
+        <%= link_to request.protocol+request.host_with_port+"/view/#{@public_link.url}", "/view/#{@public_link.url}" %>
           </p>
-  <% end %>
+<% else %>
+          <%= button_to "Create", "/issues/#{@issue.id}/public_link/new", :method => :post %>
 
+  <% end %>
+<% end %>

@@ -22,18 +22,19 @@ class PublicLinksController < ApplicationController
   def create
    @public_link = PublicLink.new(:issue_id => params[:id])
    if @public_link.save 
-      respond_to do |format| 
-        format.html { redirect_to :action => "index"} 
+     respond_to do |format|
+      format.html { redirect_to_referer_or Issue.find(@public_link.issue_id) }
         format.api  { head :ok }
-	end
+      format.js
+    end
 	end
 
   end
 
   def resolve
-          if(@public_link.active)
                   @issue = Issue.find(@public_link.issue_id)
                   @project = @issue.project
+          if(@public_link.active && @project.module_enabled?(:semipublic_links))
                   if User.current.allowed_to?(:edit_issues, @project)
                     redirect_to "/issues/#{@public_link.issue_id}"
                   else
@@ -105,7 +106,12 @@ class PublicLinksController < ApplicationController
      #if(authorize())
      if(authorize("issues", :edit))
      @public_link.toggle!(:active)
-      render nothing: true
+     respond_to do |format|
+      format.html { redirect_to_referer_or Issue.find(@public_link.issue_id) }
+      format.js
+    end
+
+      #render nothing: true
      end
   end
 
