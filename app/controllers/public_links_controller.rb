@@ -5,14 +5,8 @@ class PublicLinksController < ApplicationController
   skip_before_filter :check_if_login_required
   skip_before_filter :verify_authenticity_token  
   before_filter :require_admin, :only => [:index]
-  #before_filter :authorize, :only => [:toggle]
   before_filter :find_public_link_by_issue, :only => [:toggle]
   before_filter :find_public_link_by_url, :only => [:resolve, :download]
-
-
-
-  # for devel only!
-  #skip_before_filter :verify_authenticity_token
   accept_api_auth :toggle, :index, :create
 
   def new
@@ -38,12 +32,6 @@ class PublicLinksController < ApplicationController
                   if User.current.allowed_to?(:edit_issues, @project)
                     redirect_to "/issues/#{@public_link.issue_id}"
                   else
-  #@project = Project.new
-  #@project.is_public = true
-                  logger.info "#{@issue.inspect}"
-                  #render "/issues/#{@public_link.issue_id}"
-                  #render :template => "issues/show", id: @public_link.issue_id
-                  #render :template => "issues/show"
     @journals = @issue.journals.includes(:user, :details).
                     references(:user, :details).
                     reorder(:created_on, :id).to_a
@@ -62,10 +50,6 @@ class PublicLinksController < ApplicationController
     @time_entry = TimeEntry.new(:issue => @issue, :project => @issue.project)
     @relation = IssueRelation.new
 
-#                  render "issues/show"
-#render :text => renderActionInOtherController(IssuesController,:show, {:id => @public_link.issue_id, :controller => 'issues', :action => "show"})
-#@project = nil
-#render :text => renderActionInOtherController(IssuesController,:show, {:id => @public_link.issue_id, :controller => 'public_links', :action => "show"})
                   render "view", layout: "semi_public"
             end
           else
@@ -81,13 +65,10 @@ class PublicLinksController < ApplicationController
     if @attachment.container.is_a?(Version) || @attachment.container.is_a?(Project)
       @attachment.increment_download
     end
-#    if stale?(:etag => @attachment.digest)
-      # images are sent inline
       logger.info "sending file"
       send_file @attachment.diskfile, :filename => filename_for_content_disposition(@attachment.filename),
                                       :type => Redmine::MimeType.of(@attachment.filename).to_s,
                                       :disposition => (@attachment.image? ? 'inline' : 'attachment')
-#    end
 
     else
     render_404
@@ -97,10 +78,6 @@ class PublicLinksController < ApplicationController
   end
 
   def toggle
-      #(render_403; return false) unless @pl.issue.editable_by?(User.current)
-     #if(authorize(params={:controller => IssuesController, :action => :edit}))
-     #params[:controller] = "issues"
-     #params[:action] = "edit"
      @project = Issue.find(@public_link.issue_id).project
      logger.info "params in controller: #{params}"
      #if(authorize())
@@ -111,7 +88,6 @@ class PublicLinksController < ApplicationController
       format.js
     end
 
-      #render nothing: true
      end
   end
 
@@ -140,13 +116,5 @@ private
   rescue ActiveRecord::RecordNotFound
     render_404
   end
-def renderActionInOtherController(controller,action,params)
-    c = controller.new
-    c.params = params
-    c.dispatch(action, request)
-    c.response.body
-end
-
-
       
 end
