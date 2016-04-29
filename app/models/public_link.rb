@@ -2,6 +2,7 @@ class PublicLink < ActiveRecord::Base
   unloadable
   #belongs_to :watchable, :polymorphic => true
   attr_accessible :issue_id, :active, :url
+  validates_uniqueness_of :url
 
   def initialize(attributes=nil, *args)
     super
