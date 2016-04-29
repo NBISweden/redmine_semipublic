@@ -61,11 +61,9 @@
       rows.right l(:field_estimated_hours), issue_estimated_hours_details(@issue), :class => 'estimated-hours'
     end
   end
-  if User.current.allowed_to_view_all_time_entries?(@project)
     if @issue.total_spent_hours > 0
-      rows.right l(:label_spent_time), issue_spent_hours_details(@issue), :class => 'spent-time'
+      rows.right l(:label_spent_time), @issue.spent_hours.to_s + " h", :class => 'spent-time'
     end
-  end
 end %>
 <%= render_custom_fields_rows(@issue) %>
 <%= call_hook(:view_issues_show_details_bottom, :issue => @issue) %>
@@ -75,9 +73,6 @@ end %>
 <hr />
 <% if @issue.description? %>
 <div class="description">
-  <div class="contextual">
-  <%= link_to l(:button_quote), quoted_issue_path(@issue), :remote => true, :method => 'post', :class => 'icon icon-comment' if authorize_for('issues', 'edit') %>
-  </div>
 
   <p><strong><%=l(:field_description)%></strong></p>
   <div class="wiki">
@@ -85,12 +80,17 @@ end %>
   </div>
 </div>
 <% end %>
-<%= link_to_attachments @issue, :thumbnails => true %>
+<% if @issue.attachments.any? -%>
+  <p><strong><%=l(:label_attachment_plural)%></strong></p>
+<% for attachment in @issue.attachments %>
+<p>
+<%= link_to attachment.filename, "#{@public_link.url}/download/#{attachment.id}/#{attachment.filename}" %>
+</p>
+<% end -%>
+<% end -%>
 <% end -%>
 
 <%= call_hook(:view_issues_show_description_bottom, :issue => @issue) %>
-
-
 
 </div>
 

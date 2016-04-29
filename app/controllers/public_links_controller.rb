@@ -7,7 +7,7 @@ class PublicLinksController < ApplicationController
   before_filter :require_admin, :only => [:index]
   #before_filter :authorize, :only => [:toggle]
   before_filter :find_public_link_by_issue, :only => [:toggle]
-  before_filter :find_public_link_by_url, :only => [:resolve]
+  before_filter :find_public_link_by_url, :only => [:resolve, :download]
 
 
 
@@ -34,6 +34,9 @@ class PublicLinksController < ApplicationController
           if(@public_link.active)
                   @issue = Issue.find(@public_link.issue_id)
                   @project = @issue.project
+                  if User.current.allowed_to?(:edit_issues, @project)
+                    redirect_to "/issues/#{@public_link.issue_id}"
+                  else
   #@project = Project.new
   #@project.is_public = true
                   logger.info "#{@issue.inspect}"
@@ -63,10 +66,33 @@ class PublicLinksController < ApplicationController
 #@project = nil
 #render :text => renderActionInOtherController(IssuesController,:show, {:id => @public_link.issue_id, :controller => 'public_links', :action => "show"})
                   render "view", layout: "semi_public"
+            end
           else
                   @message = "Sorry, but this link is not active."
                   render "common/error"
           end
+  end
+
+  def download
+    @issue = Issue.find(@public_link.issue_id)
+    @attachment = Attachment.find(params[:id])
+    if(@attachment.container_type == "Issue" && @attachment.container_id == @public_link.issue_id)
+    if @attachment.container.is_a?(Version) || @attachment.container.is_a?(Project)
+      @attachment.increment_download
+    end
+#    if stale?(:etag => @attachment.digest)
+      # images are sent inline
+      logger.info "sending file"
+      send_file @attachment.diskfile, :filename => filename_for_content_disposition(@attachment.filename),
+                                      :type => Redmine::MimeType.of(@attachment.filename).to_s,
+                                      :disposition => (@attachment.image? ? 'inline' : 'attachment')
+#    end
+
+    else
+    render_404
+    end
+
+    
   end
 
   def toggle
