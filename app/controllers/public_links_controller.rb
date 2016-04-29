@@ -17,8 +17,8 @@ class PublicLinksController < ApplicationController
    @public_link = PublicLink.new(:issue_id => params[:id])
    if @public_link.save 
      respond_to do |format|
-      format.html { redirect_to_referer_or Issue.find(@public_link.issue_id) }
-        format.api  { head :ok }
+        format.html { redirect_to_referer_or Issue.find(@public_link.issue_id) }
+        format.api  { render json: @public_link, status: :created }
       format.js
     end
 	end
