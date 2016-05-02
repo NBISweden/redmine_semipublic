@@ -4,9 +4,10 @@ class PublicLinksController < ApplicationController
   unloadable
   skip_before_filter :check_if_login_required
   skip_before_filter :verify_authenticity_token  
-  before_filter :require_admin, :only => [:index]
+  before_filter :require_admin, :only => [:index, :destroy]
   before_filter :find_public_link_by_issue, :only => [:toggle]
   before_filter :find_public_link_by_url, :only => [:resolve, :download]
+  before_filter :find_public_link, :only => [:destroy]
   accept_api_auth :toggle, :index, :create
 
   def new
@@ -22,10 +23,21 @@ class PublicLinksController < ApplicationController
       format.js
     end
 	end
+  end
 
+  def destroy
+              @public_link.destroy
+              respond_to do |format|
+                      format.html { redirect_to "/public_links" }
+                      format.js {}
+              end
   end
 
   def resolve
+                  unless @public_link
+                          render_404 
+                          return
+                  end
                   @issue = Issue.find(@public_link.issue_id)
                   @project = @issue.project
           if(@public_link.active && @project.module_enabled?(:semipublic_links))
