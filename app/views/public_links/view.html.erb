@@ -32,7 +32,11 @@
         <% end %>
         </p>
 
-<div class="attributes">
+<% if Redmine::VERSION::MAJOR >= 3 %>
+        <div class="attributes">
+<% else %>
+        <table class="attributes">
+<% end %>
 <%= issue_fields_rows do |rows|
   rows.left l(:field_status), @issue.status.name, :class => 'status'
   rows.left l(:field_priority), @issue.priority.name, :class => 'priority'
@@ -56,7 +60,7 @@
   unless @issue.disabled_core_fields.include?('done_ratio')
     rows.right l(:field_done_ratio), progress_bar(@issue.done_ratio, :legend => "#{@issue.done_ratio}%"), :class => 'progress'
   end
-  unless @issue.disabled_core_fields.include?('estimated_hours')
+  unless @issue.disabled_core_fields.include?('estimated_hours') || Redmine::VERSION::MAJOR < 3
     if @issue.estimated_hours.present? || @issue.total_estimated_hours.to_f > 0
       rows.right l(:field_estimated_hours), issue_estimated_hours_details(@issue), :class => 'estimated-hours'
     end
@@ -67,7 +71,11 @@
 end %>
 <%= render_custom_fields_rows(@issue) %>
 <%= call_hook(:view_issues_show_details_bottom, :issue => @issue) %>
+<% if Redmine::VERSION::MAJOR >= 3 %>
 </div>
+<% else %>
+        </table>
+<% end %>
 
 <% if @issue.description? || @issue.attachments.any? -%>
 <hr />
@@ -84,7 +92,8 @@ end %>
   <p><strong><%=l(:label_attachment_plural)%></strong></p>
 <% for attachment in @issue.attachments %>
 <p>
-<%= link_to attachment.filename, "#{@public_link.url}/download/#{attachment.id}/#{attachment.filename}" %>
+<%= link_to attachment.filename, "#{@public_link.url}/download/#{attachment.id}/#{attachment.filename}", {:class => "icon icon-attachment"} %>
+- <%= attachment.description %>
 </p>
 <% end -%>
 <% end -%>

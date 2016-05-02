@@ -32,11 +32,15 @@ class PublicLinksController < ApplicationController
                   if User.current.allowed_to?(:edit_issues, @project)
                     redirect_to "/issues/#{@public_link.issue_id}"
                   else
+                          if(Redmine::VERSION::MAJOR >= 3)
     @journals = @issue.journals.includes(:user, :details).
                     references(:user, :details).
                     reorder(:created_on, :id).to_a
+                          else
+    @journals = @issue.journals.includes(:user, :details).reorder("#{Journal.table_name}.id ASC")
+                          end
     @journals.each_with_index {|j,i| j.indice = i+1}
-    @journals.reject!(&:private_notes?) unless User.current.allowed_to?(:view_private_notes, @issue.project)
+    @journals.reject!(&:private_notes?)
     Journal.preload_journals_details_custom_fields(@journals)
     @journals.select! {|journal| journal.notes? || journal.visible_details.any?}
     @journals.reverse! if User.current.wants_comments_in_reverse_order?
