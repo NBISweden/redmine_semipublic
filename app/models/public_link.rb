@@ -14,7 +14,7 @@ class PublicLink < ActiveRecord::Base
   def self.find_by(*args)
           logger.info "#{ args }"
           #where(*args).take
-          return PublicLink.find{|p| p.issue_id == args[0][:issue_id]} if(args[0].has_key?(:issue_id)) 
+          return PublicLink.find{|p| p.issue_id == args[0][:issue_id].to_i} if(args[0].has_key?(:issue_id)) 
           return PublicLink.find{|p| p.url == args[0][:url]} if(args[0].has_key?(:url)) 
   end
   end
