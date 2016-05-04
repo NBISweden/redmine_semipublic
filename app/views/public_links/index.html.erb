@@ -1,6 +1,7 @@
 <% @public_links.each do |pl| %>
         <p>
-        <%= link_to "#{pl.issue_id} #{Issue.find(pl.issue_id).subject}", "/view/#{pl.url}" %>
+        <% issue = Issue.find_by_id(pl.issue_id) %>
+        <%= link_to "#{pl.issue_id} #{issue ? issue.subject : "(deleted issue)"}", "/view/#{pl.url}" %>
 <%= link_to image_tag('delete.png'), public_link_path(pl), :data =>
 {:confirm => l(:text_are_you_sure)}, :method => :delete, :class => 'delete',
         :title => l(:button_delete) %>
