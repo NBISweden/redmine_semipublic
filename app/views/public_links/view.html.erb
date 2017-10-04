@@ -69,7 +69,7 @@
       rows.right l(:label_spent_time), @issue.spent_hours.to_s + " h", :class => 'spent-time'
     end
 end %>
-<%= render_custom_fields_rows(@issue) %>
+<%= render_half_width_custom_fields_rows(@issue) %>
 <%= call_hook(:view_issues_show_details_bottom, :issue => @issue) %>
 <% if Redmine::VERSION::MAJOR >= 3 %>
 </div>
@@ -119,10 +119,8 @@ end %>
 
 
 <div style="clear: both;"></div>
-<%= render :partial => 'issues/action_menu' %>
 
 
 <% html_title "#{@issue.tracker.name} ##{@issue.id}: #{@issue.subject}" %>
 
 
-<%= context_menu issues_context_menu_path %>
