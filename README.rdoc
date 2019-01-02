@@ -1,3 +1,45 @@
 = redmine_semipublic
 
 Semipublic - public but hard-to-guess links - issue views for redmine.
+
+==Author
+
+* Mikael Borg
+
+==Compatibility
+
+This plugin has been tested on redmine v 2.3..3.4.
+
+==Obtaining 
+
+<i>URL of the GitHub repository: https://github.com/NBISweden/redmine_semipublic</i>
+
+The source of this plugin can be "cloned" from the GitHub-repo using:
+
+<tt>$ cd {RAILS_ROOT}/plugins && git clone git://github.com/NBISweden/redmine_semipublic.git</tt>
+
+==Installation
+
+- Download the plugin from the available source (see "Obtaining")
+- stop Redmine
+- bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+- start redmine
+- Configure the footer of the public views at Administration -> Plugins -> Redmine Semipublic plugin -> Configure. NB: rendered as raw html.
+- Add the 'Semipublic links' module to redmine projects where this functionality is wanted
+- Issues can now get semipublic links via a button in the default issue view.
+
+==Uninstalling
+
+- Remove the directory <i>"redmine_semipublic"</i> from the plugin-directory
+- Restart Redmine
+
+==Licensing
+
+This plugin is open-source and licensed under the "GNU General Public License v2" (GPL, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html). See the included <tt>GPL.txt</tt> and <tt>LICENSE.txt</tt> files for details.
+
+* (C)2019, Mikael Borg
+
+==Support
+
+If you would like to report a bug or request a new feature you can open a new issue at the issue-tracking section of the plugins' GitHub site: https://github.com/NBISweden/redmine_semipublic/issues.
+
