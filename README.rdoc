@@ -18,7 +18,7 @@ The source of this plugin can be "cloned" from the GitHub-repo using:
 
 <tt>$ cd {RAILS_ROOT}/plugins && git clone git://github.com/NBISweden/redmine_semipublic.git</tt>
 
-==Installation
+==Installation and usage
 
 - Download the plugin from the available source (see "Obtaining")
 - stop Redmine
@@ -27,6 +27,8 @@ The source of this plugin can be "cloned" from the GitHub-repo using:
 - Configure the footer of the public views at Administration -> Plugins -> Redmine Semipublic plugin -> Configure. NB: rendered as raw html.
 - Add the 'Semipublic links' module to redmine projects where this functionality is wanted
 - Issues can now get semipublic links via a button in the default issue view.
+- A complete list of semipublic links for all projects is available at Administration -> Public Links.
+- Logged in users are automatically redirected to the standard issue view - use private browser window for testing.
 
 ==Uninstalling
 
