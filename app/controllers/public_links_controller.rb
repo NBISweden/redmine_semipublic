@@ -2,12 +2,12 @@ require 'securerandom'
 
 class PublicLinksController < ApplicationController
   unloadable
-  skip_before_filter :check_if_login_required
-  skip_before_filter :verify_authenticity_token  
-  before_filter :require_admin, :only => [:index, :destroy]
-  before_filter :find_public_link_by_issue, :only => [:toggle]
-  before_filter :find_public_link_by_url, :only => [:resolve, :download]
-  before_filter :find_public_link, :only => [:destroy]
+  skip_before_action :check_if_login_required
+  skip_before_action :verify_authenticity_token  
+  before_action :require_admin, :only => [:index, :destroy]
+  before_action :find_public_link_by_issue, :only => [:toggle]
+  before_action :find_public_link_by_url, :only => [:resolve, :download]
+  before_action :find_public_link, :only => [:destroy]
   accept_api_auth :toggle, :index, :create
 
   def new
