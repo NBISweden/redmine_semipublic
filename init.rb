@@ -11,5 +11,4 @@ Redmine::Plugin.register :redmine_semipublic do
   end
   menu :admin_menu, :semi_public, { :controller => 'public_links', :action => 'index' }, :caption => 'Public Links'
   settings :default => {'empty' => true}, :partial => 'settings/semipublic_footer'
-
 end
