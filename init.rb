@@ -3,7 +3,7 @@ Redmine::Plugin.register :redmine_semipublic do
   name 'Redmine Semipublic plugin'
   author 'Mikael Borg'
   description 'Semipublic issue views'
-  version '0.0.2'
+  version '0.0.3'
   url 'https://github.com/NBISweden/redmine_semipublic'
   author_url 'https://github.com/nmb'
   project_module :semipublic_links do
@@ -11,5 +11,4 @@ Redmine::Plugin.register :redmine_semipublic do
   end
   menu :admin_menu, :semi_public, { :controller => 'public_links', :action => 'index' }, :caption => 'Public Links'
   settings :default => {'empty' => true}, :partial => 'settings/semipublic_footer'
-
 end

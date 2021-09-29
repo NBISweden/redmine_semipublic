@@ -6,10 +6,8 @@ post '/issues/:id/public_link/new', to: 'public_links#create'
 put '/issues/:id/public_link/toggle', to: 'public_links#toggle'
 
 resources :public_links do
-     member do
-                put :toggle
-                get :dbgoutput
-     end
+  member do
+    put :toggle
+    get :dbgoutput
+  end
 end
-
-
